@@ -1,13 +1,37 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function WeatherMain() {
+type Props = {
+    temperature: number;
+    description: string;
+    icon: string; // OpenWeatherMap'ten gelen "main" alanı (Clear, Clouds, Rain vb.)
+};
+
+// API'den gelen hava durumu koduna göre uygun emoji seçen küçük yardımcı fonksiyon
+function getWeatherEmoji(icon: string) {
+    switch (icon) {
+        case 'Clear':
+            return '☀️';
+        case 'Clouds':
+            return '☁️';
+        case 'Rain':
+        case 'Drizzle':
+            return '🌧️';
+        case 'Thunderstorm':
+            return '⛈️';
+        case 'Snow':
+            return '❄️';
+        default:
+            return '🌡️'; // sis, toz vb. tanımadığımız durumlar için varsayılan
+    }
+}
+
+export default function WeatherMain({ temperature, description, icon }: Props) {
     return (
-        // Emoji, sıcaklık ve açıklamayı dikey grupluyoruz
         <View style={styles.mainInfo}>
-            {/* Emoji'yi ikon yerine kullanıyoruz - basit ve ekstra kütüphane gerektirmiyor */}
-            <Text style={styles.weatherEmoji}>☀️</Text>
-            <Text style={styles.temperature}>28°</Text>
-            <Text style={styles.description}>Açık ve Güneşli</Text>
+            <Text style={styles.weatherEmoji}>{getWeatherEmoji(icon)}</Text>
+            {/* Math.round: API ondalıklı sıcaklık gönderiyor (28.43 gibi), yuvarlıyoruz */}
+            <Text style={styles.temperature}>{Math.round(temperature)}°</Text>
+            <Text style={styles.description}>{description}</Text>
         </View>
     );
 }
@@ -18,16 +42,17 @@ const styles = StyleSheet.create({
         marginBottom: 48,
     },
     weatherEmoji: {
-        fontSize: 80, // büyük emoji, ana görsel odak
+        fontSize: 80,
     },
     temperature: {
         fontSize: 72,
-        fontWeight: '200', // ince yazı - rakamlar zaten büyük olduğu için kalın olmasına gerek yok
+        fontWeight: '200',
         color: '#FFFFFF',
     },
     description: {
         fontSize: 20,
         color: '#FFFFFF',
         marginTop: 4,
+        textTransform: 'capitalize', // API "açık" gibi küçük harfle döndürebiliyor, ilk harfi büyütüyoruz
     },
 });

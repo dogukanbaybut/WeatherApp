@@ -1,9 +1,15 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
-export default function WeatherHeader() {
+// props'un tipini tanımlıyoruz: bu component'in "city" adında bir string alması gerektiğini söylüyoruz
+type Props = {
+    city: string;
+};
+
+// { city }: gelen props objesinden direkt "city" alanını çekiyoruz (destructuring)
+export default function WeatherHeader({ city }: Props) {
     return (
         <View style={styles.header}>
-            <Text style={styles.city}>İstanbul</Text>
+            <Text style={styles.city}>{city}</Text>
             <Text style={styles.date}>28 Temmuz 2026, Salı</Text>
         </View>
     );
@@ -11,18 +17,17 @@ export default function WeatherHeader() {
 
 const styles = StyleSheet.create({
     header: {
-        alignItems: 'center', // içindeki metinleri yatayda ortala
-        marginBottom: 40,     // altındaki bölümden boşluk bırak
+        alignItems: 'center',
+        marginBottom: 40,
     },
     city: {
         fontSize: 32,
-        fontWeight: '700', // kalın yazı, göze çarpsın
+        fontWeight: '700',
         color: '#FFFFFF',
     },
     date: {
         fontSize: 16,
-        color: '#E0ECFA', // beyazdan biraz soluk ton, görsel hiyerarşi için
-        marginTop: 4,      // şehir adıyla arasına küçük bir boşluk
+        color: '#E0ECFA',
+        marginTop: 4,
     },
-}
-)
+});

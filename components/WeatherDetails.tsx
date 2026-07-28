@@ -1,27 +1,31 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function WeatherDetails() {
+type Props = {
+    feelsLike: number;
+    humidity: number;
+    windSpeed: number; // km/s cinsinden
+};
+
+export default function WeatherDetails({ feelsLike, humidity, windSpeed }: Props) {
     return (
-        // flexDirection: 'row' ile üç öğeyi yan yana diziyoruz (varsayılan column'un tersine)
         <View style={styles.detailsCard}>
             <View style={styles.detailItem}>
                 <Text style={styles.detailLabel}>Hissedilen</Text>
-                <Text style={styles.detailValue}>30°</Text>
+                <Text style={styles.detailValue}>{Math.round(feelsLike)}°</Text>
             </View>
 
-            {/* İnce dikey çizgi - sadece genişliği 1px olan boş bir View */}
             <View style={styles.detailDivider} />
 
             <View style={styles.detailItem}>
                 <Text style={styles.detailLabel}>Nem</Text>
-                <Text style={styles.detailValue}>%45</Text>
+                <Text style={styles.detailValue}>%{humidity}</Text>
             </View>
 
             <View style={styles.detailDivider} />
 
             <View style={styles.detailItem}>
                 <Text style={styles.detailLabel}>Rüzgar</Text>
-                <Text style={styles.detailValue}>12 km/s</Text>
+                <Text style={styles.detailValue}>{Math.round(windSpeed)} km/s</Text>
             </View>
         </View>
     );
@@ -29,20 +33,20 @@ export default function WeatherDetails() {
 
 const styles = StyleSheet.create({
     detailsCard: {
-        flexDirection: 'row', // üç öğeyi yan yana diz
-        backgroundColor: 'rgba(255, 255, 255, 0.15)', // yarı saydam beyaz, "cam" efekti
+        flexDirection: 'row',
+        backgroundColor: 'rgba(255, 255, 255, 0.15)',
         borderRadius: 16,
         paddingVertical: 20,
         paddingHorizontal: 16,
         width: '100%',
     },
     detailItem: {
-        flex: 1, // üç öğe eşit genişlikte olsun
+        flex: 1,
         alignItems: 'center',
     },
     detailDivider: {
         width: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.3)', // ince ayraç çizgisi
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
     },
     detailLabel: {
         fontSize: 13,
