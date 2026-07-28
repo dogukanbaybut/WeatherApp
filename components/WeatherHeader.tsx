@@ -1,33 +1,39 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-// props'un tipini tanımlıyoruz: bu component'in "city" adında bir string alması gerektiğini söylüyoruz
 type Props = {
-    city: string;
+  city: string;
 };
 
-// { city }: gelen props objesinden direkt "city" alanını çekiyoruz (destructuring)
 export default function WeatherHeader({ city }: Props) {
-    return (
-        <View style={styles.header}>
-            <Text style={styles.city}>{city}</Text>
-            <Text style={styles.date}>28 Temmuz 2026, Salı</Text>
-        </View>
-    );
+  const today = new Date().toLocaleDateString('tr-TR', {
+    day: 'numeric',
+    month: 'long',
+    weekday: 'long',
+  });
+
+  return (
+    <View style={styles.header}>
+      <Text style={styles.city}>{city}</Text>
+      <Text style={styles.date}>{today}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    header: {
-        alignItems: 'center',
-        marginBottom: 40,
-    },
-    city: {
-        fontSize: 32,
-        fontWeight: '700',
-        color: '#FFFFFF',
-    },
-    date: {
-        fontSize: 16,
-        color: '#E0ECFA',
-        marginTop: 4,
-    },
+  header: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  city: {
+    fontSize: 30,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
+  },
+  date: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.75)',
+    marginTop: 4,
+    textTransform: 'capitalize',
+  },
 });
