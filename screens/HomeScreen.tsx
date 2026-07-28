@@ -3,9 +3,12 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import WeatherHeader from '../components/WeatherHeader';
 import WeatherMain from '../components/WeatherMain';
 import WeatherDetails from '../components/WeatherDetails';
+import SearchBar from '../components/SearchBar';
 import { fetchWeather } from '../services/weatherApi';
 
 export default function HomeScreen() {
+    // artık aranacak şehir de bir state - başlangıçta İstanbul
+    const [city, setCity] = useState('Istanbul');
     const [weather, setWeather] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -14,27 +17,34 @@ export default function HomeScreen() {
         async function loadWeather() {
             try {
                 setLoading(true);
-                const data = await fetchWeather('Istanbul');
+                setError(null); // yeni aramada eski hatayı temizle
+                const data = await fetchWeather(city); // artık sabit 'Istanbul' değil, state'teki city
                 setWeather(data);
             } catch (err) {
-                setError('Hava durumu alınamadı, tekrar dene.');
+                setError('Şehir bulunamadı, tekrar dene.');
             } finally {
                 setLoading(false);
             }
         }
 
         loadWeather();
-    }, []);
+    }, [city]); // <- [city]: city değeri her değiştiğinde bu efekt yeniden çalışır
+
+    // SearchBar'dan gelen "ara" isteğini karşılayan fonksiyon.
+    // Burada sadece city state'ini güncelliyoruz, useEffect zaten [city] değişimini görüp fetch'i tetikleyecek.
+    function handleSearch(newCity: string) {
+        setCity(newCity);
+    }
 
     return (
         <View style={styles.container}>
+            <SearchBar onSearch={handleSearch} />
+
             {loading ? (
                 <ActivityIndicator size="large" color="#FFFFFF" />
             ) : error ? (
                 <Text style={styles.errorText}>{error}</Text>
             ) : weather ? (
-                // weather objesi geldiyse, içindeki alanları component'lere props olarak dağıtıyoruz.
-                // OpenWeatherMap'in cevap yapısı: { name, main: { temp, feels_like, humidity }, wind: { speed }, weather: [{ main, description }] }
                 <>
                     <WeatherHeader city={weather.name} />
                     <WeatherMain
@@ -45,7 +55,7 @@ export default function HomeScreen() {
                     <WeatherDetails
                         feelsLike={weather.main.feels_like}
                         humidity={weather.main.humidity}
-                        windSpeed={weather.wind.speed * 3.6} // API m/s döndürüyor, km/s'e çeviriyoruz (1 m/s = 3.6 km/s)
+                        windSpeed={weather.wind.speed * 3.6}
                     />
                 </>
             ) : null}
